@@ -27,39 +27,86 @@ def serve_frontend():
 @app.post("/analyze")
 def analyze(data: CodeRequest):
 
-    base_prompt = f"""
-You are CodeRefine AI.
+    prompt = f"""
+You are CodeRefine AI — a senior software engineer and debugging expert.
 
-Perform ALL of the following clearly:
+Analyze the code and follow the output structure STRICTLY.
 
-1️⃣ Run Explanation (What will this code do?)
-2️⃣ Professional Code Review
-3️⃣ Bugs (if any)
-4️⃣ Improvements
-5️⃣ Performance
-6️⃣ Security
-7️⃣ Clean Improved Version
+Run Explanation
+Explain the program in numbered points.
 
-Code:
-{data.code}
+Professional Code Review
+Write code quality review in numbered points.
+
+Bugs
+List syntax and logical errors in numbered points.
+
+Improvements
+Write suggested improvements in numbered points.
+
+Performance
+Write performance related notes in numbered points.
+
+Security
+Write security related observations in numbered points.
+
+Clean Improved Code
+
+First write ONE line explaining what the corrected code does and in which language it runs.
+
+Then provide ONLY the corrected code.
+
+IMPORTANT RULES:
+
+• Fix ALL syntax errors  
+• Always return FULL working code  
+• Use correct headers
+
+HEADER RULES:
+
+If language is C → use
+#include <stdio.h>
+
+If language is C++ → use
+#include <iostream>
+using namespace std;
+
+If language is Python → no headers
+
+If language is Java → return full class
+
+VERY IMPORTANT:
+
+• Do NOT print language name like c, cpp, python above code  
+• Return ONLY code inside the code block  
+• Do NOT add explanation inside code
 """
 
     if data.instruction:
-        base_prompt += f"""
+        prompt += f"""
 
-Also apply this transformation instruction:
+Transformation Instruction
+
+Apply the instruction AFTER fixing the code.
+
+Instruction:
 {data.instruction}
 
-Then provide:
-8️⃣ Transformed Final Code
+Return the FULL transformed code.
+"""
+
+    prompt += f"""
+
+Source Code:
+{data.code}
 """
 
     try:
         response = client.chat.completions.create(
             model="llama-3.3-70b-versatile",
-            messages=[{"role": "user", "content": base_prompt}],
-            temperature=0.4,
-            max_tokens=1500
+            messages=[{"role": "user", "content": prompt}],
+            temperature=0.1,
+            max_tokens=2000
         )
 
         return {
@@ -68,4 +115,3 @@ Then provide:
 
     except Exception as e:
         return {"output": f"Error: {str(e)}"}
-

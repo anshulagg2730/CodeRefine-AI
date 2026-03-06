@@ -144,10 +144,7 @@ margin-top:6px;
 
 function cleanMarkdown(text){
 return text
-.replace(/^\s*\d+\s*$/gm,"")
-.replace(/^\d+\.\s*/gm,"")
-.replace(/\n\d+\n/g,"\n")
-.replace(/^###\s*/gm,"")
+.replace(/###/g,"")
 .replace(/\*\*\*/g,"")
 .replace(/---/g,"")
 .replace(/```([\s\S]*?)```/g,function(match,code){
