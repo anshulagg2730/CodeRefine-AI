@@ -117,4 +117,5 @@ Source Code:
         }
 
     except Exception as e:
-        return {"output": f"Error: {str(e)}"}
+        print("GROQ ERROR:", e)
+        return {"output": str(e)}
