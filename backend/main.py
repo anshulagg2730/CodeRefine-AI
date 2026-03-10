@@ -12,7 +12,8 @@ app = FastAPI()
 print("API KEY:", os.getenv("GROQ_API_KEY"))
 
 client = Groq(
-    api_key=os.getenv("GROQ_API_KEY")
+    api_key=os.getenv("GROQ_API_KEY"),
+    timeout=60
 )
 
 class CodeRequest(BaseModel):
@@ -108,7 +109,7 @@ Source Code:
             model="llama3-8b-8192",
             messages=[{"role": "user", "content": prompt}],
             temperature=0.1,
-            max_tokens=2000
+            max_tokens=800
         )
 
         return {
