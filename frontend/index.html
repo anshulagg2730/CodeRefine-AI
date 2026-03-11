@@ -147,8 +147,8 @@ function cleanMarkdown(text){
 return text
 .replace(/###/g,"")
 .replace(/\*\*\*/g,"")
-.replace(/\*\*/g,"")
 .replace(/---/g,"")
+.replace(/(\d+\.\s)/g,"<br>$1")
 .replace(/```([\s\S]*?)```/g,function(match,code){
 return '<div class="code-block">'+code.trim()+'</div>';
 });
