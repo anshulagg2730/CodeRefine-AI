@@ -69,7 +69,7 @@ background:#0f172a;
 padding:25px;
 border-radius:14px;
 font-size:16px;
-line-height:1.6;
+line-height:1.7;
 }
 
 .heading{
@@ -148,7 +148,8 @@ return text
 .replace(/###/g,"")
 .replace(/\*\*/g,"")
 .replace(/---/g,"")
-.replace(/\n\n+/g,"\n")
+.replace(/\n\s*\n/g,"\n")
+.replace(/(\d+\.\s)/g,"<br>$1")
 .replace(/```([\s\S]*?)```/g,function(match,code){
 return '<div class="code-block">'+code.trim()+'</div>';
 });
@@ -175,10 +176,6 @@ text=text.replace(regex,
 return text;
 }
 
-function convertBullets(text){
-return text.replace(/(\d+\.\s)/g,"<br>$1");
-}
-
 async function runAnalyze(){
 
 const code=document.getElementById("codeInput").value;
@@ -203,7 +200,6 @@ const data=await response.json();
 
 let output=cleanMarkdown(data.output);
 output=styleHeadings(output);
-output=convertBullets(output);
 
 resultBox.innerHTML=output;
 
