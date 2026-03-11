@@ -177,35 +177,8 @@ return text;
 
 function convertBullets(text){
 
-let sections=text.split('<div class="heading"');
-let final="";
+return text.replace(/(\d+\.\s)/g,"<br>$1");
 
-sections.forEach((section,index)=>{
-
-if(index===0){
-final+=section;
-return;
-}
-
-let parts=section.split('</div>');
-let heading=parts[0];
-let content=parts[1] || "";
-
-let lines=content.split("\n");
-let count=1;
-
-lines=lines.map(line=>{
-if(line.trim().startsWith("-")){
-let cleaned=line.replace("-","").trim();
-return '<div class="point">'+count+++". "+cleaned+'</div>';
-}
-return line;
-});
-
-final+='<div class="heading"'+heading+'</div>'+lines.join("\n");
-});
-
-return final;
 }
 
 async function runAnalyze(){
