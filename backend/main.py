@@ -12,8 +12,7 @@ app = FastAPI()
 print("API KEY:", os.getenv("GROQ_API_KEY"))
 
 client = Groq(
-    api_key=os.getenv("GROQ_API_KEY"),
-    timeout=60
+    api_key=os.getenv("GROQ_API_KEY")
 )
 
 class CodeRequest(BaseModel):
