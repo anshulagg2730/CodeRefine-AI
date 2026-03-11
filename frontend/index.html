@@ -69,7 +69,7 @@ background:#0f172a;
 padding:25px;
 border-radius:14px;
 font-size:16px;
-line-height:1.7;
+line-height:1.6;
 }
 
 .heading{
@@ -146,9 +146,9 @@ margin-top:6px;
 function cleanMarkdown(text){
 return text
 .replace(/###/g,"")
-.replace(/\*\*\*/g,"")
+.replace(/\*\*/g,"")
 .replace(/---/g,"")
-.replace(/(\d+\.\s)/g,"<br>$1")
+.replace(/\n\n+/g,"\n")
 .replace(/```([\s\S]*?)```/g,function(match,code){
 return '<div class="code-block">'+code.trim()+'</div>';
 });
@@ -176,9 +176,7 @@ return text;
 }
 
 function convertBullets(text){
-
 return text.replace(/(\d+\.\s)/g,"<br>$1");
-
 }
 
 async function runAnalyze(){
