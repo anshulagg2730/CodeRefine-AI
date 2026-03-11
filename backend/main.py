@@ -1,21 +1,15 @@
 from fastapi import FastAPI
 from fastapi.responses import HTMLResponse
 from pydantic import BaseModel
-from groq import Groq
 from dotenv import load_dotenv
 import os
+import httpx
 
 load_dotenv()
 
 app = FastAPI()
 
 print("API KEY:", os.getenv("GROQ_API_KEY"))
-
-client = Groq(
-    api_key=os.getenv("GROQ_API_KEY"),
-    timeout=30,
-    max_retries=3
-)
 
 class CodeRequest(BaseModel):
     code: str
@@ -29,7 +23,7 @@ def serve_frontend():
 
 
 @app.post("/analyze")
-def analyze(data: CodeRequest):
+async def analyze(data: CodeRequest):
 
     prompt = f"""
 You are CodeRefine AI — a senior software engineer and debugging expert.
@@ -106,15 +100,28 @@ Source Code:
 """
 
     try:
-        response = client.chat.completions.create(
-            model="llama-3.1-8b-instant",
-            messages=[{"role": "user", "content": prompt}],
-            temperature=0.1,
-            max_tokens=800
-        )
+
+        async with httpx.AsyncClient(timeout=30) as client:
+            response = await client.post(
+                "https://api.groq.com/openai/v1/chat/completions",
+                headers={
+                    "Authorization": f"Bearer {os.getenv('GROQ_API_KEY')}",
+                    "Content-Type": "application/json"
+                },
+                json={
+                    "model": "llama-3.1-8b-instant",
+                    "messages": [
+                        {"role": "user", "content": prompt}
+                    ],
+                    "temperature": 0.1,
+                    "max_tokens": 800
+                }
+            )
+
+        data = response.json()
 
         return {
-            "output": response.choices[0].message.content
+            "output": data["choices"][0]["message"]["content"]
         }
 
     except Exception as e:
