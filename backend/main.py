@@ -1,13 +1,18 @@
 from fastapi import FastAPI
 from fastapi.responses import HTMLResponse
+from fastapi.responses import FileResponse
 from pydantic import BaseModel
 from dotenv import load_dotenv
 import os
 import httpx
 
-load_dotenv()
-
 app = FastAPI()
+
+@app.get("/favicon.ico")
+async def favicon():
+    return FileResponse("favicon.ico")
+
+load_dotenv()
 
 print("API KEY:", os.getenv("GROQ_API_KEY"))
 
